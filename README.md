@@ -32,7 +32,7 @@ Then, when starting the backend, point TBSSvis to your dataset with the `TSBSS_D
 
 ## References
 
-[1] J. Miettinen, M. Matilainen, K. Nordhausen, and S. Taskinen, “Extracting Conditionally Heteroskedastic Components using Independent Component Analysis,” Journal of Time Series Analysis, vol. 41, no. 2, pp. 293–311, 2020, doi: 10.1111/jtsa.12505.
-[1a] https://cran.r-project.org/web/packages/tsBSS/index.html
-[2] https://cran.r-project.org/web/packages/stochvol/stochvol.pdf, see section `exrates`
-[3] https://lubridate.tidyverse.org/
+* [1] J. Miettinen, M. Matilainen, K. Nordhausen, and S. Taskinen, “Extracting Conditionally Heteroskedastic Components using Independent Component Analysis,” Journal of Time Series Analysis, vol. 41, no. 2, pp. 293–311, 2020, doi: 10.1111/jtsa.12505.
+* [1a] https://cran.r-project.org/web/packages/tsBSS/index.html
+* [2] https://cran.r-project.org/web/packages/stochvol/stochvol.pdf, see section `exrates`
+* [3] https://lubridate.tidyverse.org/
