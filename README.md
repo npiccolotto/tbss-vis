@@ -28,7 +28,7 @@ Data is loaded from the subfolder `server/app/data`. Two datasets are included: 
 
 To use a custom dataset, place a CSV file in the folder mentioned above. The first column must contain the date in the format `yyyy/mm/dd` (or any day-precision format that `lubridate` [3] parses correctly). The column names should be preferably short, we developed TBSSvis with 3 characters length.
 
-Then, when starting the backend, point TBSSvis to your dataset with the `TSBSS_DATASET` environment variable. E.g., if your data is in the file `server/app/data/customdata.csv`, use  `-e TSBSS_DATASET=customdata` in the docker command in step 3 of the previous section.
+Then, when starting the backend, point TBSSvis to your dataset with the `TSBSS_DATASET` environment variable. E.g., if your data is in the file `server/app/data/customdata.csv`, use  `-e TSBSS_DATASET=customdata` in the docker command in step 4 of the previous section.
 
 ## References
 
