@@ -35,8 +35,17 @@ import {
   SelectedResult
 } from "@/types/store";
 import _axios from "axios";
-import { parse, isBefore, isAfter, isEqual } from "date-fns";
-import { getDay, getISOWeek, getMonth, getYear } from "date-fns";
+import { parse, parseISO, isBefore, isAfter, isEqual } from "date-fns";
+import {
+  getDay,
+  getISOWeek,
+  getMonth,
+  getYear,
+  getHours,
+  getMinutes,
+  getSeconds,
+  getMilliseconds
+} from "date-fns";
 import group from "lodash-es/groupBy";
 import range from "lodash-es/range";
 import Vue from "vue";
@@ -174,6 +183,10 @@ export default new Vuex.Store<StoreState>({
       maxAutocorrelation: [],
       eigenvalue: [],
       calendar: {
+        millisecond: [],
+        second: [],
+        minute: [],
+        hour: [],
         day: [],
         week: [],
         month: [],
@@ -411,6 +424,10 @@ export default new Vuex.Store<StoreState>({
 
       let dates = state.sources.dates;
       const fn = {
+        millisecond: getMilliseconds,
+        second: getSeconds,
+        minute: getMinutes,
+        hour: getHours,
         day: getDay,
         week: getISOWeek,
         month: getMonth,
@@ -495,7 +512,8 @@ export default new Vuex.Store<StoreState>({
         transformedData = data.map((srcp, i) => ({
           date: srcp.date,
           value: parseFloat(srcp.value),
-          parsedDate: parse(srcp.date, "yyyy/MM/dd", now)
+          parsedDate: parseISO(srcp.date)
+          // parsedDate: parse(srcp.date, "yyyy/MM/dd", now)
         }));
         const parsedDates = transformedData.map(x => x.parsedDate);
 
@@ -996,6 +1014,21 @@ export default new Vuex.Store<StoreState>({
     ),
     fetchCalendarProximities: trackedAsyncAction(
       async function fetchCalendarProximities({ commit }) {
+        const millisecond = await axios.get<ACFPoint[]>(
+          "/guidance/calendar?granule=millisecond"
+        );
+        const second = await axios.get<ACFPoint[]>(
+          "/guidance/calendar?granule=second"
+        );
+        const minute = await axios.get<ACFPoint[]>(
+          "/guidance/calendar?granule=minute"
+        );
+        const hour = await axios.get<ACFPoint[]>(
+          "/guidance/calendar?granule=hour"
+        );
+        const day = await axios.get<ACFPoint[]>(
+          "/guidance/calendar?granule=day"
+        );
         const week = await axios.get<ACFPoint[]>(
           "/guidance/calendar?granule=week"
         );
@@ -1006,6 +1039,11 @@ export default new Vuex.Store<StoreState>({
           "/guidance/calendar?granule=year"
         );
         commit("setCalendarProximities", {
+          millisecond: millisecond.data,
+          second: second.data,
+          minute: minute.data,
+          hour: hour.data,
+          day: day.data,
           week: week.data,
           month: month.data,
           year: year.data

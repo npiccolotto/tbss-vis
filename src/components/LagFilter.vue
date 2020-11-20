@@ -1,21 +1,42 @@
 <template>
   <div>
     <div class="lag-filter__resolutions">
-      <label for="day" v-show="calendar.day.length > 0"
-        ><input v-model="resolution" type="radio" id="day" value="day" />
-        Daily</label
+      <label for="millisecond" v-show="calendar.millisecond.length > 1"
+        ><input
+          v-model="resolution"
+          type="radio"
+          id="millisecond"
+          value="millisecond"
+        />
+        Millisecond</label
       >
-      <label for="week" v-show="calendar.week.length > 0"
+      <label for="second" v-show="calendar.second.length > 1"
+        ><input v-model="resolution" type="radio" id="second" value="second" />
+        Second</label
+      >
+      <label for="minute" v-show="calendar.minute.length > 1"
+        ><input v-model="resolution" type="radio" id="minute" value="minute" />
+        Minute</label
+      >
+      <label for="hour" v-show="calendar.hour.length > 1"
+        ><input v-model="resolution" type="radio" id="hour" value="hour" />
+        Hour</label
+      >
+      <label for="day" v-show="calendar.day.length > 1"
+        ><input v-model="resolution" type="radio" id="day" value="day" />
+        Day</label
+      >
+      <label for="week" v-show="calendar.week.length > 1"
         ><input v-model="resolution" type="radio" id="week" value="week" />
-        Weekly
+        Week
       </label>
-      <label for="month" v-show="calendar.month.length > 0"
+      <label for="month" v-show="calendar.month.length > 1"
         ><input v-model="resolution" type="radio" id="month" value="month" />
-        Monthly
+        Month
       </label>
-      <label for="year" v-show="calendar.year.length > 0"
+      <label for="year" v-show="calendar.year.length > 1"
         ><input v-model="resolution" type="radio" id="year" value="year" />
-        Yearly
+        Year
       </label>
     </div>
     <!-- dummy element for reactivity -->
@@ -87,6 +108,10 @@ class LagFilterClass extends Vue {
 
   public resolution: CalendarGranule = "day";
   public brushesPerResolution: Record<CalendarGranule, Brushes> = {
+    millisecond: {},
+    second: {},
+    minute: {},
+    hour: {},
     day: {},
     week: {},
     month: {},
@@ -294,7 +319,7 @@ export default class LagFilter extends LagFilterClass {
 <style lang="less">
 .lag-filter__resolutions {
   display: grid;
-  grid-template-columns: repeat(4, max-content);
+  grid-template-columns: repeat(8, max-content);
   grid-gap: 15px;
 }
 

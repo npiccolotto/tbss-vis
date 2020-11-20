@@ -1,3 +1,4 @@
+library("pryr")
 library("zoo")
 library("hash")
 library("moments")
@@ -53,7 +54,7 @@ norm_power <- function(v) {
   )
 }
 
-supported_sort_metrics <- c('skewness', 'kurtosis') # 'periodicity'
+supported_sort_metrics <- c('skewness', 'kurtosis', 'periodicity') #
 supported_sort_metrics_fns <- hash::hash()
 supported_sort_metrics_fns[['skewness']] <-
   function(ts) {
@@ -92,12 +93,21 @@ assign_running_number <- function(x) {
     cumsum()
 }
 
+options(digits.secs=3)
+dates.parsed <- lubridate::as_datetime(dates.char)
 dates.relative <- data.frame(
   "date_char" = dates.char,
-  "year" = lubridate::year(dates.char),
-  "month" = lubridate::month(dates.char),
-  "week" = lubridate::week(dates.char)
-) %>% dplyr::mutate_if(is.numeric, assign_running_number)
+  "year" = lubridate::year(dates.parsed),
+  "month" = lubridate::month(dates.parsed),
+  "week" = lubridate::week(dates.parsed),
+  "day" = lubridate::day(dates.parsed),
+  "hour" = lubridate::hour(dates.parsed),
+  "minute" = lubridate::minute(dates.parsed),
+  "second" = round(lubridate::second(dates.parsed)),
+  "millisecond" = lubridate::second(dates.parsed) * 1000
+)
+
+dates.relative <- dates.relative %>% dplyr::mutate_if(is.numeric, assign_running_number)
 
 #### UTILS
 
@@ -317,7 +327,7 @@ cop_pam <-
     }
 
     # initial medoids are from unconstrained PAM - in our case distances suggest the correct partitioning anyhow
-    initial <- cluster::pam(D, k, diss=T, pamonce = 5)
+    initial <- cluster::pam(D, k, diss=T, pamonce = 5, trace.lev = 0)
     A <- as.integer(initial$clustering)
     M <- unlist(lapply(initial$medoids, function(a) {
       return(match(a, initial$medoids))
@@ -860,7 +870,7 @@ embed <-
     eig <- eigen(dist_matrix)
     emb <- matrix(0, ncol = 2, nrow = nrow(m))
     if (all(eig$values[1:2] != 0)) {
-      emb <- cmdscale(dist_matrix, k = 2)
+      emb <- MASS::isoMDS(as.matrix(dist_matrix + 1e-8), k = 2)$points
     }
     fe_emb <- project_embedding_for_frontend(emb, map_edge_length = embedding_size, cell_size = grid_cell_size)
     fe_emb.proj <- rasterize_and_remove_overlaps(fe_emb$embedding, map_edge_length = embedding_size, cell_size = grid_cell_size)
@@ -964,6 +974,10 @@ fcc <- function(X, lag = 1) {
   S <- cov(X)
   R <- matrix(0, ncol=p, nrow=p)
 
+  if (det(S) == 0) {
+    return(0)
+  }
+
   Yt <- Y[1:(n - lag), ]
   Yti <- Y[(1 + lag):n, ]
   r <- sqrt(mahalanobis(Yt, center=FALSE, cov=S))
@@ -1015,19 +1029,21 @@ calc_calendar <- function(data, lag.max = 100) {
     colnames(lag.proximities) <-
       c("lag", "mult", "granule", "proximity")
 
-    for (granule in c('year', 'month', 'week')) {
-      diffs <- as.vector(tabulate(lagged.diff[, granule])) / num_rows_in_lag
-      lag.proximities <- lag.proximities %>% add_row(
-        lag = (t + numeric(length(diffs))),
-        granule = granule,
+    for (granule_type in c('year', 'month', 'week', 'day', 'hour', 'minute', 'second', 'millisecond'))  {
+      diffs <- as.vector(tabulate(lagged.diff[, granule_type])) / num_rows_in_lag
+      ndiffs <- length(diffs)
+      lag.proximities <- rbind(
+        lag.proximities,
+        data.frame(
+        lag = rep(t + ndiffs, ndiffs),
+        granule = rep(granule_type, ndiffs),
         mult = c(1:length(diffs)),
-        proximity = diffs
+        proximity = diffs)
       )
     }
     print(paste0('Calculated calendar proximity for lag ', t))
     granule.proximity <- rbind(granule.proximity, lag.proximities)
   }
-
   granule.proximity <-
     granule.proximity %>% group_by(mult, granule) %>% filter(proximity == max(proximity)) %>% filter(row_number() == 1)
   return(granule.proximity)
@@ -1197,7 +1213,7 @@ get_clustering_guidance <- function(components, p, time_budget_secs=30) {
   while (total_elapsed_secs < time_budget_secs && num_results > 1 && k < useful_max) {
     k <- k + 1
     i <- k - p + 1
-    tictoc::tic()
+    tictoc::tic(paste('COP-PAM, k =', k, 'of', useful_max))
     clusters <- cop_pam(1-abs(all_components_corr),
                         cannot_link,
                         k,
@@ -1328,7 +1344,7 @@ run_sobi <- function(data,
     sobi <- sobi$result
     p <- ncol(sobi$S)
     n <- nrow(sobi$S)
-    S <- as.data.frame(sobi$S, row.names = as.Date(rownames(data)))
+    S <- as.data.frame(sobi$S, row.names = dates.char)
 
     # Update distance matrix
     tictoc::tic('Update distance matrices')
@@ -1338,7 +1354,7 @@ run_sobi <- function(data,
     this_normalized_w <- w_hat_simil$normalized_w[c((nn - p + 1):nn), ]
     this_normalized_w_std <- this_normalized_w %*% dataset.SD
     normalized_s <- as.data.frame(tcrossprod(data_w, this_normalized_w),
-                                  row.names = rownames(data),
+                                  row.names = dates.char,
                                   col.names = colnames(S))
 
     # Add components to global structure for fast lookup
@@ -1586,7 +1602,7 @@ function(col, from = NA, to = NA) {
 function(k1 = '1,2,3,4,5,6,7,8,9,10,11,12',
          k2 = '1,2,3',
          b = 0.9,
-         eps = 1,
+         eps = 1e-03,
          maxiter = 1000) {
   return(run_sobi(
     dataset.zoo,
@@ -2234,4 +2250,13 @@ function(lagbinsize = 1,
   return(result)
 }
 
-prepare_results(lag.max, N=2)
+num_user_random_settings <- Sys.getenv('TSBSS_NUM_PRECOMPUTE')
+if (num_user_random_settings!='') {
+  num_user_random_settings <- as.numeric(num_user_random_settings)
+  if (is.na(num_user_random_settings)) {
+    num_user_random_settings <- 7
+  }
+} else {
+  num_user_random_settings <- 7
+}
+prepare_results(lag.max, N=num_user_random_settings)

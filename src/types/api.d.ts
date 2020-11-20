@@ -13,7 +13,15 @@ export type SourcePoint = {
 
 export type EigenvaluePoint = { lag: number; value: string };
 
-export type CalendarGranule = "month" | "week" | "year" | "day";
+export type CalendarGranule =
+  | "month"
+  | "week"
+  | "year"
+  | "day"
+  | "hour"
+  | "minute"
+  | "second"
+  | "millisecond";
 export type CalendarPoint = {
   lag: number;
   mult: number;
@@ -21,7 +29,7 @@ export type CalendarPoint = {
   proximity: number;
 };
 
-export type ComponentSortingMetric = "kurtosis" | "skewness"; //| "periodicity"
+export type ComponentSortingMetric = "kurtosis" | "skewness" | "periodicity";
 export type ComponentSimilarityMeasure = "doi" | "dist";
 
 export type CompactMatrix = {

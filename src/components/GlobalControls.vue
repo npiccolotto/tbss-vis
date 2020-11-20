@@ -231,11 +231,11 @@ class GlobalControlsClass extends Vue {
   },
   data: function() {
     return {
-      metrics: ["skewness", "kurtosis"], //"periodicity"
+      metrics: ["skewness", "kurtosis", "periodicity"],
       metricLabels: {
         skewness: "Abs. Skewness",
-        kurtosis: "Kurtosis"
-        //periodicity: "Periodicity"
+        kurtosis: "Kurtosis",
+        periodicity: "Periodicity"
       },
       granules: ["day", "week", "month", "year"],
       lagSetWindow: {
