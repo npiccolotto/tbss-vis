@@ -22,7 +22,7 @@ setwd('/app/')
 
 
 #### DATA INIT
-set.seed(1)
+set.seed(321)
 dataset_name <- Sys.getenv('TSBSS_DATASET')
 if (dataset_name == '') {
   print("[WARNING]: TSBSS_DATASET unset, using default dataset")
