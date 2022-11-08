@@ -337,7 +337,9 @@ cop_pam <-
     constraint_violations <- does_clustering_violate_constraints(A, cannot_link_list)
     C <- calc_cost(A, M)
     C.star <- 0
-    while(any(constraint_violations) || abs(C.star - C) > 1e-4) {
+    maxiter <- 1e2
+    while((any(constraint_violations) || abs(C.star - C) > 1e-4) && maxiter > 0) {
+      maxiter <- maxiter - 1
       C <- C.star
       M.star <- M
       for (j in 1:k) {
