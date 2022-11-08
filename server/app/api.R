@@ -1353,9 +1353,9 @@ run_sobi <- function(data,
     w_hat_simil <<- update_w_hat_simil(w_hat_simil, id, sobi$W)
     num_results <- length(get_success_results()) + 1
     nn <- num_results * p
-    this_normalized_w <- w_hat_simil$normalized_w[c((nn - p + 1):nn), ]
-    this_normalized_w_std <- this_normalized_w %*% dataset.SD
-    normalized_s <- as.data.frame(tcrossprod(data_w, this_normalized_w),
+    this_normalized_w_std <- sobi$W %*% dataset.SD
+    X <- sweep(data_w, MARGIN=2, STATS=colMeans(data_w), FUN="-")
+    normalized_s <- as.data.frame(tcrossprod(X, sobi$W),
                                   row.names = dates.char,
                                   col.names = colnames(S))
 
@@ -1436,7 +1436,7 @@ run_sobi <- function(data,
         b = b,
         S = normalized_s,
         Sorig = S,
-        W = this_normalized_w,
+        W = sobi$W,
         W_std = this_normalized_w_std,
         sortings = sortings,
         model_diag = list(
