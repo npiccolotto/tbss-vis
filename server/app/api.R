@@ -327,7 +327,7 @@ cop_pam <-
     }
 
     # initial medoids are from unconstrained PAM - in our case distances suggest the correct partitioning anyhow
-    initial <- cluster::pam(D, k, diss=T, pamonce = 5, trace.lev = 0)
+    initial <- cluster::pam(D, k, diss=T, pamonce = 0, trace.lev = 0)
     A <- as.integer(initial$clustering)
     M <- unlist(lapply(initial$medoids, function(a) {
       return(match(a, initial$medoids))
