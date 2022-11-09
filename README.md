@@ -8,7 +8,7 @@ This repository contains code for the prototype _TBSSvis_, a visual analytics ap
 
 Please refer to the paper:
 
-N. Piccolotto, M. Bögl, T. Gschwandtner, C. Muehlmann, K. Nordhausen, P. Filzmoser, and S. Miksch: "TBSSvis: Visual Analytics for Temporal Blind Source Separation", submitted for publication. [https://arxiv.org/abs/2011.09896](https://arxiv.org/abs/2011.09896)
+N. Piccolotto, M. Bögl, T. Gschwandtner, C. Muehlmann, K. Nordhausen, P. Filzmoser, and S. Miksch: "TBSSvis: Visual Analytics for Temporal Blind Source Separation", Visual Informatics (2022). [http://dx.doi.org/10.1016/j.visinf.2022.10.002](http://dx.doi.org/10.1016/j.visinf.2022.10.002)
 
 ## Installation and running
 
