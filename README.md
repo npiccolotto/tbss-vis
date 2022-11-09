@@ -22,6 +22,10 @@ Prerequisites: Node.js (>= v12), Docker (>= 19.03.13). Note that the tool itself
 
 TBSSvis should now be accessible at `http://localhost:8080/` with the `exrates` [2] dataset. See next section how to change the dataset.
 
+### Without Docker
+
+You can also run the backend server (a [plumber](https://www.rplumber.io/) API) on your host. Open `api.R` with RStudio. Install its dependencies and comment out the `setwd` line. Any dataset name should be hardcoded a few lines below. Open a Terminal in the folder `server` of this project. Start an R session (just the `R` command). Then type `plumber::pr_run(plumber::pr("api.R", dir="app"), port=8008)` and hit return.
+
 ## Changing the dataset
 
 Data is loaded from the subfolder `server/app/data`. Two datasets are included: `exrates` [2], a dataset of currency exchange rates, and `fetal-ecg`, a medical dataset. Note that TBSSvis expects datasets to be connected to a Gregorian calendar with resolution up to milliseconds.
