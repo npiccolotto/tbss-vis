@@ -4,6 +4,8 @@ _Visual Analytics for Temporal Blind Source Separation_
 
 This repository contains code for the prototype _TBSSvis_, a visual analytics app for the Blind Source Separation algorithm gSOBI [1, 1a]. It provides a consistent and intuitive interface to select parameters and explore components.
 
+[![DOI](https://zenodo.org/badge/312222652.svg)](https://zenodo.org/badge/latestdoi/312222652)
+
 ## Usage
 
 Please refer to the paper:
