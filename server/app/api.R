@@ -1037,7 +1037,7 @@ calc_calendar <- function(data, lag.max = 100) {
       lag.proximities <- rbind(
         lag.proximities,
         data.frame(
-        lag = rep(t + ndiffs, ndiffs),
+        lag = rep(t, ndiffs),
         granule = rep(granule_type, ndiffs),
         mult = c(1:length(diffs)),
         proximity = diffs)
