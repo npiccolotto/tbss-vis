@@ -31,7 +31,7 @@ if (dataset_name == '') {
 dataset_path <- paste('data/', dataset_name, '.csv', sep='')
 dataset_original <- read.csv(dataset_path)
 dates.char <- dataset_original$date
-dataset <- as.matrix(dataset_original[, -1])
+dataset <- apply(as.matrix(dataset_original[, -1]), 2, function(x) {return(as.double(x))})
 dataset.sd <- unlist(unname(apply(dataset, 2, 'sd')))
 dataset.SD <- diag(dataset.sd)
 
